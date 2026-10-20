@@ -23,10 +23,11 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
     // Preload heavy assets in the background while stars are twinkling
     try {
-      const heroBg = new Image();
-      heroBg.src = '/src/assets/birth-day-bg.webp';
       const hatImg = new Image();
       hatImg.src = '/src/assets/hat.webp';
+      // Preload 3D model assets into browser cache during opening stars
+      fetch('/models/colorful_balloons.glb');
+      fetch('/models/free_realistic_disco_ball.glb');
     } catch {
       // background preload non-blocking
     }
@@ -59,13 +60,13 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   return (
     <AnimatePresence>
-      {/* Opening Step Screen - Pure clean white background as shown in opening-step.png */}
+      {/* Opening Step Screen - Pristine #FDFDFD background */}
       <motion.div
         key="loading-bg"
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.45 }}
-        className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white select-none"
+        className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#FDFDFD] select-none"
       >
         {/* 5 Twinkling Stars Row */}
         <div className="flex items-center gap-3 sm:gap-4 mb-6" role="status" aria-label="Setting out the stars">
@@ -111,9 +112,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           })}
         </div>
 
-        {/* Text in JustLikeHeaven font: "Setting out the stars for you, just a moment." */}
+        {/* Text in clean Montserrat font: "Setting out the stars for you, just a moment." */}
         <motion.p
-          className="font-heaven text-xl sm:text-2xl text-[#1A1A2E] text-center px-6 tracking-wide"
+          className="font-montserrat font-medium text-lg sm:text-xl text-[#2A2A3E] text-center px-6 tracking-wide"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}

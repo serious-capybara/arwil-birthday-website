@@ -127,10 +127,9 @@ export function EventReminders() {
 
           {/* iPhone 18 Frame Container matching section-four.png */}
           <div className="relative w-[86vw] max-w-[340px] sm:max-w-[370px] h-[580px] sm:h-[630px] rounded-[52px] p-3 shadow-2xl border-[6px] border-[#181920] bg-[#0c0d12] flex flex-col items-center overflow-hidden [transform-style:preserve-3d]">
-            {/* Wallpaper Background matching birthday texture */}
+            {/* Wallpaper Background matching website theme */}
             <div
-              className="absolute inset-0 bg-cover bg-center rounded-[44px] opacity-95"
-              style={{ backgroundImage: "url('/src/assets/birth-day-bg.webp')" }}
+              className="absolute inset-0 bg-[#0A515A] rounded-[44px] opacity-95"
             />
 
             {/* Subtle glass reflection highlight */}

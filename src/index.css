@@ -1,25 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
-
-/* ══════════════════════════════════════════════════════
-   FONTS
-══════════════════════════════════════════════════════ */
-@font-face {
-  font-family: 'JustLikeHeaven';
-  src: url('/src/assets/font/just-like-heaven.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
 
 /* ══════════════════════════════════════════════════════
    CSS CUSTOM PROPERTIES (Design Tokens)
 ══════════════════════════════════════════════════════ */
 :root {
-  --font-heaven: 'JustLikeHeaven', cursive;
+  --font-heaven: 'Montserrat', sans-serif;
   --font-montserrat: 'Montserrat', sans-serif;
 
   /* Brand palette */
+  --site-teal:     #0A515A;
+  --loading-bg:    #FDFDFD;
   --pink-pastel:   #F9C5D1;
   --pink-mid:      #E8849A;
   --pink-bold:     #C4526A;
@@ -51,11 +42,10 @@ html {
 
 body {
   font-family: var(--font-montserrat);
-  background-color: #ffffff; /* pure white during initial load — App.tsx sets birthday bg after loading */
+  background-color: #0A515A;
   color: var(--dark-ink);
   overflow-x: hidden;
   line-height: 1.6;
-  /* prevent pull-to-refresh jank */
   overscroll-behavior-y: none;
 }
 
@@ -123,11 +113,7 @@ img, video {
    STICKY BG (fixed background pattern)
 ══════════════════════════════════════════════════════ */
 .bg-fixed-birthday {
-  background-image: url('/src/assets/birth-day-bg.webp');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-color: #0A515A;
 }
 
 /* ══════════════════════════════════════════════════════

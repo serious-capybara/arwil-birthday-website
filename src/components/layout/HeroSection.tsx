@@ -13,12 +13,12 @@ export function HeroSection() {
       className="section-full min-h-screen flex flex-col items-center justify-end pb-12 sm:pb-16 relative overflow-hidden"
       aria-label="Birthday invitation hero"
     >
-      {/* 3D Scene (Pink Disco balls top-left & top-right, floating metallic balloons) */}
+      {/* 3D Scene (Silver/Pink Disco balls, interactive floating purple-pink balloons) */}
       <Suspense fallback={null}>
-        <HeroScene className="absolute inset-0 pointer-events-none z-10" />
+        <HeroScene className="absolute inset-0 pointer-events-auto z-10" />
       </Suspense>
 
-      {/* Ripped Graph Paper Title Card - Placed to overlap bottom of cat mascot exactly as in hero-step.png */}
+      {/* Ripped Graph Paper Title Card - Placed to overlap bottom of cat mascot */}
       <motion.div
         className="relative z-25 w-[92vw] max-w-[360px] sm:max-w-[420px] mb-4 sm:mb-8"
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -34,7 +34,7 @@ export function HeroSection() {
             className="w-full h-auto object-contain select-none drop-shadow-xl"
           />
 
-          {/* Text positioned right on the ripped graph paper as in hero-step.png */}
+          {/* Text positioned right on the ripped graph paper */}
           <div className="absolute inset-0 pt-6 sm:pt-8 px-4 flex flex-col items-center justify-center text-center">
             <h1 className="font-montserrat font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-[0.12em] uppercase text-black leading-snug">
               Meow<br />
@@ -51,17 +51,17 @@ export function HeroSection() {
 
       {/* Subtle Scroll Hint */}
       <motion.div
-        className="relative z-20 flex flex-col items-center gap-1.5 opacity-70"
+        className="relative z-20 flex flex-col items-center gap-1.5"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.75 }}
+        animate={{ opacity: 0.85 }}
         transition={{ delay: 1.2, duration: 0.8 }}
       >
-        <span className="font-montserrat text-[10px] tracking-widest uppercase text-[#554a5c]">
+        <span className="font-montserrat text-[10px] tracking-widest uppercase text-white/90 drop-shadow-xs">
           Scroll to explore
         </span>
         <motion.div
-          className="w-1 h-6 bg-[#B496BC] rounded-full"
-          animate={{ scaleY: [1, 0.4, 1], opacity: [0.5, 1, 0.5] }}
+          className="w-1 h-6 bg-[#FFAEC9] rounded-full shadow-xs"
+          animate={{ scaleY: [1, 0.4, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         />
       </motion.div>

@@ -96,7 +96,7 @@ export function WishCarousel({ refreshTrigger }: WishCarouselProps) {
               <span className="font-montserrat font-bold text-xs sm:text-sm text-[#1A1A2E] truncate block">
                 {currentWish.name}
               </span>
-              <p className="font-heaven text-lg sm:text-xl text-[#3d3d5a] line-clamp-2 leading-snug mt-0.5">
+              <p className="font-montserrat font-medium text-xs sm:text-sm text-[#3d3d5a] line-clamp-2 leading-relaxed mt-0.5 italic">
                 "{currentWish.message}"
               </p>
             </div>

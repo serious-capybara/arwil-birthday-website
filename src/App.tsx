@@ -18,8 +18,8 @@ export default function App() {
   }, []);
 
   return (
-    <div className={`relative min-h-screen text-[#1A1A2E] font-montserrat overflow-x-hidden selection:bg-[#F9C5D1] selection:text-[#1A1A2E] ${isLoading ? 'bg-white' : 'bg-fixed-birthday'}`}>
-      {/* Opening Step: Twinkling 5 paper stars on pure white background + Clash of Clans style cloud wipe */}
+    <div className={`relative min-h-screen text-[#1A1A2E] font-montserrat overflow-x-hidden selection:bg-[#F9C5D1] selection:text-[#1A1A2E] ${isLoading ? 'bg-[#FDFDFD]' : 'bg-[#0A515A]'}`}>
+      {/* Opening Step: Twinkling 5 paper stars on #FDFDFD background + Clash of Clans style cloud wipe */}
       <AnimatePresence>
         {isLoading && (
           <LoadingScreen onComplete={handleLoadingComplete} />

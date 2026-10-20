@@ -72,7 +72,7 @@ export function WhenAndWhere() {
           </span>
 
           <div className="w-[88%] sm:w-[72%] bg-[#B496BC] rounded-3xl px-6 py-4 sm:py-5 shadow-sm text-center">
-            <p className="font-heaven text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E]">
+            <p className="font-montserrat font-bold text-xl sm:text-2xl md:text-3xl text-[#1A1A2E] tracking-tight">
               November 20, 6:40 pm
             </p>
           </div>
@@ -91,7 +91,7 @@ export function WhenAndWhere() {
           </span>
 
           <div className="w-[92%] sm:w-[82%] bg-[#B496BC] rounded-3xl p-5 sm:p-6 shadow-sm">
-            <p className="font-heaven text-xl sm:text-2xl md:text-3xl text-[#1A1A2E] leading-relaxed">
+            <p className="font-montserrat font-semibold text-lg sm:text-xl md:text-2xl text-[#1A1A2E] leading-relaxed">
               The Almonds Boutique Aparthotel, SerenityCore Wellness Hub Palette, Hon. Tudtud Road
             </p>
           </div>

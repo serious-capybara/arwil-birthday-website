@@ -85,9 +85,9 @@ export function DressCode() {
               />
             </div>
 
-            {/* Description in JustLikeHeaven font */}
+            {/* Description */}
             <div className="w-1/2 sm:w-7/12 text-right pr-2 sm:pr-4">
-              <p className="font-heaven text-3xl sm:text-4xl md:text-5xl text-[#1A1A2E] leading-snug">
+              <p className="font-montserrat font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
                 Pastel<br />
                 pink<br />
                 active<br />
@@ -117,9 +117,9 @@ export function DressCode() {
               className="absolute -top-3 -right-3 w-10 h-10 select-none z-10 drop-shadow-xs"
             />
 
-            {/* Description in JustLikeHeaven font */}
+            {/* Description */}
             <div className="w-1/2 sm:w-7/12 text-left pl-2 sm:pl-4">
-              <p className="font-heaven text-3xl sm:text-4xl md:text-5xl text-[#1A1A2E] leading-snug">
+              <p className="font-montserrat font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
                 Lavender<br />
                 active<br />
                 wear

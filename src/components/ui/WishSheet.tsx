@@ -231,7 +231,7 @@ export function WishSheet({
                       value={messageInput}
                       onChange={(e) => setMessageInput(e.target.value)}
                       placeholder="Write your warmest birthday thoughts, yoga jokes, or sweet greetings..."
-                      className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-sm font-heaven text-lg focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition resize-none outline-hidden"
+                      className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-sm font-montserrat focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition resize-none outline-hidden"
                     />
                   </div>
 

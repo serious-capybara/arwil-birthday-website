@@ -87,10 +87,10 @@ export function GuestListSection() {
             </span>
           </div>
 
-          <h2 className="font-heaven text-4xl sm:text-5xl text-[#1A1A2E]">
+          <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
             Are you joining the fun?
           </h2>
-          <p className="font-montserrat text-xs sm:text-sm text-[#4a4a6a] mt-1.5 max-w-md mx-auto leading-relaxed">
+          <p className="font-montserrat text-xs sm:text-sm text-white/85 mt-2 max-w-md mx-auto leading-relaxed">
             Find your name on the invited guest list below to confirm your attendance or send a sweet birthday wish!
           </p>
         </div>
@@ -153,7 +153,7 @@ export function GuestListSection() {
             </div>
           ) : filteredGuests.length === 0 ? (
             <div className="py-12 text-center">
-              <p className="font-heaven text-2xl text-[#6b5b73]">No matching guest found</p>
+              <p className="font-montserrat font-bold text-lg text-[#6b5b73]">No matching guest found</p>
               <p className="font-montserrat text-xs text-gray-500 mt-1">
                 {searchQuery ? 'Check spelling or verify your name with the host.' : 'No attendees registered yet.'}
               </p>

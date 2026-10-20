@@ -9,31 +9,27 @@ import * as THREE from 'three';
 function iPhoneModel() {
   const { scene } = useGLTF('/models/apple_iphone_18_pro_max.glb');
 
-  // Apply wallpaper texture to screen mesh
+  // Apply sleek theme color to screen mesh
   useEffect(() => {
-    const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('/src/assets/birth-day-bg.webp', (texture) => {
-      texture.flipY = false;
-      scene.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          const name = child.name.toLowerCase();
-          // Target screen/display meshes
-          if (
-            name.includes('screen') ||
-            name.includes('display') ||
-            name.includes('glass') ||
-            name.includes('front')
-          ) {
-            const mat = new THREE.MeshStandardMaterial({
-              map: texture,
-              roughness: 0.1,
-              metalness: 0.0,
-              envMapIntensity: 0.5,
-            });
-            child.material = mat;
-          }
+    scene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const name = child.name.toLowerCase();
+        // Target screen/display meshes
+        if (
+          name.includes('screen') ||
+          name.includes('display') ||
+          name.includes('glass') ||
+          name.includes('front')
+        ) {
+          const mat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color('#0A515A'),
+            roughness: 0.1,
+            metalness: 0.1,
+            envMapIntensity: 0.5,
+          });
+          child.material = mat;
         }
-      });
+      }
     });
   }, [scene]);
 
@@ -87,13 +83,13 @@ export function PhoneScene({ mouseX, mouseY, className }: PhoneSceneProps) {
         dpr={[1, 2]}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={1.5} />
-          <directionalLight position={[3, 5, 5]} intensity={2} />
-          <pointLight position={[-3, 2, 2]} intensity={0.6} color="#C8A8D8" />
+          <ambientLight intensity={1.6} />
+          <hemisphereLight args={['#FFFFFF', '#0A515A', 0.8]} />
+          <directionalLight position={[3, 5, 5]} intensity={2.2} />
+          <directionalLight position={[-3, -2, 2]} intensity={1.0} color="#FFAEC9" />
+          <pointLight position={[-3, 2, 2]} intensity={0.8} color="#C8A8D8" />
 
           <PhoneGroup mouseX={mouseX} mouseY={mouseY} />
-
-          <Environment preset="city" />
         </Suspense>
       </Canvas>
     </div>
