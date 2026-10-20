@@ -1,62 +1,60 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { LoadingScreen } from './components/LoadingScreen';
-import { Confetti } from './components/Confetti';
-import { FloatingMascot } from './components/FloatingMascot';
-import { HeroSection } from './components/HeroSection';
-import { SectionTwo } from './components/SectionTwo';
-import { SectionThree } from './components/SectionThree';
-import { SectionFour } from './components/SectionFour';
-import { SectionFive } from './components/SectionFive';
+import { LoadingScreen } from './components/motion/LoadingScreen';
+import { ConfettiCanvas } from './components/motion/ConfettiCanvas';
+import { FloatingMascot } from './components/motion/FloatingMascot';
+import { HeroSection } from './components/layout/HeroSection';
+import { WhenAndWhere } from './components/layout/WhenAndWhere';
+import { DressCode } from './components/layout/DressCode';
+import { EventReminders } from './components/layout/EventReminders';
+import { GuestListSection } from './components/layout/GuestListSection';
+import { Footer } from './components/layout/Footer';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const handleLoadingComplete = useCallback(() => {
+    setIsLoading(false);
+  }, []);
+
   return (
-    <div className="relative min-h-screen bg-[#F5EDD8] text-[#1A1A2E] font-montserrat overflow-x-hidden selection:bg-[#F9C5D1] selection:text-[#1A1A2E]">
-      {/* Opening Step: Loading screen with star twinkles and Clash-of-Clans style cloud wipe */}
+    <div className={`relative min-h-screen text-[#1A1A2E] font-montserrat overflow-x-hidden selection:bg-[#F9C5D1] selection:text-[#1A1A2E] ${isLoading ? 'bg-white' : 'bg-fixed-birthday'}`}>
+      {/* Opening Step: Twinkling 5 paper stars on pure white background + Clash of Clans style cloud wipe */}
       <AnimatePresence>
         {isLoading && (
-          <LoadingScreen onComplete={() => setIsLoading(false)} />
+          <LoadingScreen onComplete={handleLoadingComplete} />
         )}
       </AnimatePresence>
 
-      {/* Main One-Page Invitation Content */}
+      {/* Main Single-Page Birthday Invitation Content */}
       {!isLoading && (
         <>
-          {/* Confetti celebration effect on Hero */}
-          <Confetti particleCount={140} />
+          {/* Festive dynamic confetti canvas */}
+          <ConfettiCanvas particleCount={130} />
 
-          {/* Floating Mascot (Cat + Hat) that shifts position across sections like an interactive product presentation */}
+          {/* Interactive Floating Mascot (Cat + Hat) that glides between sections */}
           <FloatingMascot />
 
-          {/* Page Sections */}
+          {/* Sections flow matching design references */}
           <main className="relative z-10 flex flex-col">
-            {/* Hero Step */}
+            {/* Hero Section: Pink disco balls, cat behind ripped note paper, metallic balloons */}
             <HeroSection />
 
-            {/* Section Two: When and Where? */}
-            <SectionTwo />
+            {/* When and Where Section: "When and where?" card, WHEN / WHERE mauve cards, mini map & confirmation modal */}
+            <WhenAndWhere />
 
-            {/* Section Three: What to wear? */}
-            <SectionThree />
+            {/* Dress Code Section: "What to wear?" card, THIS (pastel pink) / THAT (lavender) cards */}
+            <DressCode />
 
-            {/* Section Four: Reminders (iPhone 18 3D + Live Clock + Grouped Glass Notifications) */}
-            <SectionFour />
+            {/* Reminders Section: 3D iPhone 18, live clock, centered disco ball, 3D tilt glass notifications */}
+            <EventReminders />
 
-            {/* Section Five: Guest List, Verification, RSVP with Save the Date, Responsive Wish Sheet, & Wish Carousel */}
-            <SectionFive />
+            {/* Guest List & RSVP Section: Max 5 rows, real-time search, Supabase integration, wishing ticker, Save the Date modal */}
+            <GuestListSection />
           </main>
 
-          {/* Footer */}
-          <footer className="relative z-10 py-10 px-4 text-center border-t border-black/5 bg-[#F5EDD8]">
-            <p className="font-heaven text-2xl text-[#1A1A2E]">
-              Meow Yoga Birthday
-            </p>
-            <p className="font-montserrat text-xs text-[#6b5b73] mt-1">
-              November 20, 2026 • Hon. Tudtud Road, Cebu City • With love & meows 🐾
-            </p>
-          </footer>
+          {/* Clean Footer */}
+          <Footer />
         </>
       )}
     </div>

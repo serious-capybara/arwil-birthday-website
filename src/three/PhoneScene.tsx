@@ -12,7 +12,7 @@ function iPhoneModel() {
   // Apply wallpaper texture to screen mesh
   useEffect(() => {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('/src/assets/birth-day-bg.png', (texture) => {
+    textureLoader.load('/src/assets/birth-day-bg.webp', (texture) => {
       texture.flipY = false;
       scene.traverse((child) => {
         if (child instanceof THREE.Mesh) {
