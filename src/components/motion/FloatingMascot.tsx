@@ -62,22 +62,26 @@ export function FloatingMascot() {
       >
         {/* Cat with party hat container */}
         <div className="relative w-48 sm:w-60 md:w-68">
-          {/* Party Hat with pink glitter pompom */}
-          <motion.img
-            src={hatImg}
-            alt=""
-            role="presentation"
-            className="absolute -top-[52%] left-1/2 -translate-x-1/2 w-[52%] h-auto z-10 pointer-events-none drop-shadow-md"
-            animate={{
-              rotate: [-2, 2, -2],
-              y: [-1, 1, -1],
-            }}
-            transition={{
-              duration: 3.2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
+          {/* Party Hat — brim sits flush on the cat's crown (no gap) */}
+          <div className="absolute left-1/2 w-[46%] z-10 pointer-events-none"
+            style={{ top: 0, transform: 'translate(-50%, -74%)' }}
+          >
+            <motion.img
+              src={hatImg}
+              alt=""
+              role="presentation"
+              className="w-full h-auto drop-shadow-md"
+              animate={{
+                rotate: [-2, 2, -2],
+                y: [-1, 1, -1],
+              }}
+              transition={{
+                duration: 3.2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          </div>
 
           {/* Kitten body */}
           <motion.img

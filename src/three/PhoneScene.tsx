@@ -1,6 +1,6 @@
 import { Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 // ──────────────────────────────────────────────────
