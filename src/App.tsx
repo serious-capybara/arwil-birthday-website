@@ -1,122 +1,64 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { LoadingScreen } from './components/LoadingScreen';
+import { Confetti } from './components/Confetti';
+import { FloatingMascot } from './components/FloatingMascot';
+import { HeroSection } from './components/HeroSection';
+import { SectionTwo } from './components/SectionTwo';
+import { SectionThree } from './components/SectionThree';
+import { SectionFour } from './components/SectionFour';
+import { SectionFive } from './components/SectionFive';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="relative min-h-screen bg-[#F5EDD8] text-[#1A1A2E] font-montserrat overflow-x-hidden selection:bg-[#F9C5D1] selection:text-[#1A1A2E]">
+      {/* Opening Step: Loading screen with star twinkles and Clash-of-Clans style cloud wipe */}
+      <AnimatePresence>
+        {isLoading && (
+          <LoadingScreen onComplete={() => setIsLoading(false)} />
+        )}
+      </AnimatePresence>
 
-      <div className="ticks"></div>
+      {/* Main One-Page Invitation Content */}
+      {!isLoading && (
+        <>
+          {/* Confetti celebration effect on Hero */}
+          <Confetti particleCount={140} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          {/* Floating Mascot (Cat + Hat) that shifts position across sections like an interactive product presentation */}
+          <FloatingMascot />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          {/* Page Sections */}
+          <main className="relative z-10 flex flex-col">
+            {/* Hero Step */}
+            <HeroSection />
+
+            {/* Section Two: When and Where? */}
+            <SectionTwo />
+
+            {/* Section Three: What to wear? */}
+            <SectionThree />
+
+            {/* Section Four: Reminders (iPhone 18 3D + Live Clock + Grouped Glass Notifications) */}
+            <SectionFour />
+
+            {/* Section Five: Guest List, Verification, RSVP with Save the Date, Responsive Wish Sheet, & Wish Carousel */}
+            <SectionFive />
+          </main>
+
+          {/* Footer */}
+          <footer className="relative z-10 py-10 px-4 text-center border-t border-black/5 bg-[#F5EDD8]">
+            <p className="font-heaven text-2xl text-[#1A1A2E]">
+              Meow Yoga Birthday
+            </p>
+            <p className="font-montserrat text-xs text-[#6b5b73] mt-1">
+              November 20, 2026 • Hon. Tudtud Road, Cebu City • With love & meows 🐾
+            </p>
+          </footer>
+        </>
+      )}
+    </div>
+  );
 }
-
-export default App

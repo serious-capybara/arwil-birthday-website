@@ -1,1 +1,293 @@
- @import "tailwindcss";
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+/* ══════════════════════════════════════════════════════
+   FONTS
+══════════════════════════════════════════════════════ */
+@font-face {
+  font-family: 'JustLikeHeaven';
+  src: url('/src/assets/font/just-like-heaven.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ══════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES (Design Tokens)
+══════════════════════════════════════════════════════ */
+:root {
+  --font-heaven: 'JustLikeHeaven', cursive;
+  --font-montserrat: 'Montserrat', sans-serif;
+
+  /* Brand palette */
+  --pink-pastel:   #F9C5D1;
+  --pink-mid:      #E8849A;
+  --pink-bold:     #C4526A;
+  --lavender:      #C8A8D8;
+  --lavender-mid:  #A480C4;
+  --cream:         #F5EDD8;
+  --cream-dark:    #E8DCCA;
+  --dark-ink:      #1A1A2E;
+  --card-glass:    rgba(255,255,255,0.72);
+  --card-glass-border: rgba(255,255,255,0.5);
+
+  /* Spacing */
+  --section-px: clamp(1rem, 5vw, 4rem);
+}
+
+/* ══════════════════════════════════════════════════════
+   BASE RESET & DEFAULTS
+══════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-montserrat);
+  background-color: var(--cream);
+  color: var(--dark-ink);
+  overflow-x: hidden;
+  line-height: 1.6;
+  /* prevent pull-to-refresh jank */
+  overscroll-behavior-y: none;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ══════════════════════════════════════════════════════
+   TYPOGRAPHY UTILITIES
+══════════════════════════════════════════════════════ */
+.font-heaven {
+  font-family: var(--font-heaven);
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat);
+}
+
+/* ══════════════════════════════════════════════════════
+   GLASSMORPHISM CARD
+══════════════════════════════════════════════════════ */
+.glass-card {
+  background: var(--card-glass);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid var(--card-glass-border);
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.glass-card-dark {
+  background: rgba(26,26,46,0.55);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+
+/* ══════════════════════════════════════════════════════
+   SCROLLBAR STYLING
+══════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--lavender);
+  border-radius: 99px;
+}
+
+/* ══════════════════════════════════════════════════════
+   SECTION LAYOUT
+══════════════════════════════════════════════════════ */
+.section-full {
+  min-height: 100svh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════
+   STICKY BG (fixed background pattern)
+══════════════════════════════════════════════════════ */
+.bg-fixed-birthday {
+  background-image: url('/src/assets/birth-day-bg.png');
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ══════════════════════════════════════════════════════
+   THREE.JS CANVAS
+══════════════════════════════════════════════════════ */
+.three-canvas-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   CONFETTI (canvas overlay)
+══════════════════════════════════════════════════════ */
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* ══════════════════════════════════════════════════════
+   ATTENDEES TABLE
+══════════════════════════════════════════════════════ */
+.attendees-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+/* ══════════════════════════════════════════════════════
+   NOTIFICATION CARD (Section 4)
+══════════════════════════════════════════════════════ */
+.notif-card {
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.65);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* ══════════════════════════════════════════════════════
+   WISH CAROUSEL
+══════════════════════════════════════════════════════ */
+.wish-carousel-track {
+  display: flex;
+  gap: 1.25rem;
+  animation: scrollLeft 30s linear infinite;
+  width: max-content;
+}
+
+.wish-carousel-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ══════════════════════════════════════════════════════
+   STAR TWINKLE (Loading)
+══════════════════════════════════════════════════════ */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.9) rotate(-5deg); }
+  50%       { opacity: 1;   transform: scale(1.05) rotate(5deg);  }
+}
+
+/* ══════════════════════════════════════════════════════
+   CLOUD TRANSITION
+══════════════════════════════════════════════════════ */
+.cloud-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   MAP EMBED
+══════════════════════════════════════════════════════ */
+.map-embed {
+  border: 0;
+  border-radius: 1rem;
+  filter: sepia(20%) saturate(110%);
+}
+
+/* ══════════════════════════════════════════════════════
+   LAVENDER PILL
+══════════════════════════════════════════════════════ */
+.pill-lavender {
+  background: var(--lavender);
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+/* ══════════════════════════════════════════════════════
+   FOCUS VISIBLE RING (a11y)
+══════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--pink-mid);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+══════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .wish-carousel-track {
+    animation: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE SHEET (wish message panel)
+══════════════════════════════════════════════════════ */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .sheet-overlay {
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+}
+
+.sheet-panel {
+  background: #fff;
+  border-radius: 1.5rem 1.5rem 0 0;
+  width: 100%;
+  max-width: 100%;
+  padding: 2rem;
+  max-height: 85svh;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .sheet-panel {
+    border-radius: 1.5rem 0 0 1.5rem;
+    width: 420px;
+    max-width: 420px;
+    max-height: 100svh;
+    height: 100%;
+    border-right: none;
+  }
+}
