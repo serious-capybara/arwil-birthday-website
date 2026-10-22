@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import paperStar from '../../assets/paper-star.webp';
 import clouds1 from '../../assets/clouds-1.webp';
 import clouds2 from '../../assets/clouds-2.webp';
@@ -10,7 +10,7 @@ interface LoadingScreenProps {
 }
 
 const STAR_COUNT = 5;
-const TOTAL_DURATION_MS = 3600; // 3.6s star progression before cloud wipe
+const TOTAL_DURATION_MS = 2400; // star progression before the cloud wipe (kept short; can also be skipped)
 
 export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [litStars, setLitStars] = useState(0);
@@ -18,16 +18,26 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
+  const reduceMotion = useReducedMotion();
+  const skipRef = useRef<() => void>(() => undefined);
+
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      timers.forEach(clearTimeout);
+      onCompleteRef.current();
+    };
+    // Skip: no waiting. With reduced motion we skip the cloud wipe entirely.
+    skipRef.current = finish;
 
     // Preload heavy assets in the background while stars are twinkling
     try {
-      const hatImg = new Image();
-      hatImg.src = '/src/assets/hat.webp';
-      // Preload 3D model assets into browser cache during opening stars
-      fetch('/models/colorful_balloons.glb');
-      fetch('/models/free_realistic_disco_ball.glb');
+      // Preload 3D model assets into the browser cache during the opening stars
+      fetch('/models/colorful_balloons.glb').catch(() => undefined);
+      fetch('/models/free_realistic_disco_ball.glb').catch(() => undefined);
     } catch {
       // background preload non-blocking
     }
@@ -42,21 +52,24 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     }
 
     // Step 2: Trigger Clash of Clans cloud wipe
-    const cloudTimer = setTimeout(() => {
-      setPhase('clouds');
-    }, TOTAL_DURATION_MS);
-    timers.push(cloudTimer);
+    if (reduceMotion) {
+      timers.push(setTimeout(finish, 900));
+    } else {
+      const cloudTimer = setTimeout(() => {
+        setPhase('clouds');
+      }, TOTAL_DURATION_MS);
+      timers.push(cloudTimer);
 
-    // Step 3: Complete transition smoothly to hero-step
-    const doneTimer = setTimeout(() => {
-      onCompleteRef.current();
-    }, TOTAL_DURATION_MS + 950);
-    timers.push(doneTimer);
+      // Step 3: Complete transition smoothly to hero-step
+      const doneTimer = setTimeout(finish, TOTAL_DURATION_MS + 950);
+      timers.push(doneTimer);
+    }
 
     return () => {
+      finished = true;
       timers.forEach(clearTimeout);
     };
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <AnimatePresence>
@@ -69,7 +82,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#FDFDFD] select-none"
       >
         {/* 5 Twinkling Stars Row */}
-        <div className="flex items-center gap-3 sm:gap-4 mb-6" role="status" aria-label="Setting out the stars">
+        <div className="flex items-center gap-3 sm:gap-4 mb-6" role="status" aria-live="polite" aria-label="Setting out the stars">
           {Array.from({ length: STAR_COUNT }).map((_, i) => {
             const isLit = litStars > i;
             return (
@@ -114,13 +127,21 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
         {/* Text in clean Montserrat font: "Setting out the stars for you, just a moment." */}
         <motion.p
-          className="font-montserrat font-medium text-lg sm:text-xl text-[#2A2A3E] text-center px-6 tracking-wide"
+          className="font-display font-semibold text-lg sm:text-xl text-[#2A2A3E] text-center px-6"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
         >
           Setting out the stars for you, just a moment.
         </motion.p>
+
+        <button
+          type="button"
+          onClick={() => skipRef.current()}
+          className="btn btn-secondary mt-8"
+        >
+          Skip
+        </button>
       </motion.div>
 
       {/* Clash-of-Clans style cloud wipe overlay */}

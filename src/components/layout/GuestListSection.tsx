@@ -61,177 +61,156 @@ export function GuestListSection() {
     <section
       id="guest-list"
       className="section-full min-h-screen py-24 px-4 sm:px-8 relative flex flex-col items-center justify-center overflow-hidden"
-      aria-label="Guest list and RSVP section"
+      aria-labelledby="guest-list-title"
     >
-      {/* Decorative Stickers & Sparkles matching Section 2 and 3 aesthetic */}
-      <img
-        src={silverStars}
-        alt=""
-        role="presentation"
-        className="absolute top-8 right-0 w-80 sm:w-96 opacity-65 pointer-events-none select-none z-0"
-      />
-      <img
-        src={paperTrumpet}
-        alt=""
-        role="presentation"
-        className="absolute top-12 left-4 w-20 sm:w-28 rotate-12 opacity-80 pointer-events-none select-none z-0 drop-shadow-md"
-      />
+      <div className="stage" aria-hidden="true" />
+
+      {/* Decorative stickers and sparkles */}
+      <img src={silverStars} alt="" role="presentation" className="absolute top-8 right-0 w-80 sm:w-96 opacity-60 pointer-events-none select-none z-0" />
+      <img src={paperTrumpet} alt="" role="presentation" className="absolute top-12 left-4 w-20 sm:w-28 rotate-12 opacity-80 pointer-events-none select-none z-0 drop-shadow-md" />
 
       <div className="relative z-10 w-full max-w-xl mx-auto flex flex-col gap-6">
-        {/* Section Header */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 mb-2.5 bg-white/75 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/80 shadow-xs">
+        {/* Section header */}
+        <header className="text-center">
+          <p className="material inline-flex items-center gap-2 mb-3 px-4 py-2 rounded-full t-eyebrow text-[#4A3B55]">
             <img src={paperStar} alt="" className="w-4 h-4 select-none" />
-            <span className="font-montserrat font-bold text-xs uppercase tracking-widest text-[#6b5b73]">
-              Guest List & RSVP
-            </span>
-          </div>
+            <span>Guest list & RSVP</span>
+          </p>
 
-          <h2 className="font-montserrat font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
+          <h2 id="guest-list-title" className="t-large-title text-white">
             Are you joining the fun?
           </h2>
-          <p className="font-montserrat text-xs sm:text-sm text-white/85 mt-2 max-w-md mx-auto leading-relaxed">
-            Find your name on the invited guest list below to confirm your attendance or send a sweet birthday wish!
+          <p className="t-body text-[var(--on-teal-secondary)] mt-3 max-w-md mx-auto">
+            Find your name on the guest list to confirm you're coming, or send a sweet birthday wish.
           </p>
-        </div>
+        </header>
 
-        {/* Search Bar & Direct Action */}
-        <div className="flex flex-col sm:flex-row gap-3 items-center">
+        {/* Search + primary action */}
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative w-full">
+            <label htmlFor="guest-search" className="sr-only">
+              Search the guest list by name
+            </label>
+            <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-[#66667C] pointer-events-none" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
             <input
-              type="text"
+              id="guest-search"
+              type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search your name on guest list..."
-              className="w-full pl-10 pr-4 py-3 bg-white/85 backdrop-blur-md rounded-2xl border border-white/80 text-xs sm:text-sm font-montserrat placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition shadow-xs outline-hidden"
+              placeholder="Search your name"
+              autoComplete="off"
+              enterKeyHint="search"
+              className="field pl-11 pr-12 rounded-2xl"
+              style={{ boxShadow: 'var(--elev-1)' }}
             />
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-              🔍
-            </span>
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+                className="icon-btn absolute right-0.5 top-1/2 -translate-y-1/2 bg-transparent"
+                aria-label="Clear search"
               >
-                ✕
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
               </button>
             )}
           </div>
 
-          {/* Direct RSVP Button */}
-          <button
-            type="button"
-            onClick={() => handleOpenRsvp()}
-            className="w-full sm:w-auto flex-shrink-0 px-5 py-3 bg-[#1A1A2E] hover:bg-[#2b2b48] text-white font-montserrat font-bold text-xs sm:text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <img src={acceptIcon} alt="" className="w-3.5 h-3.5" />
+          <button type="button" onClick={() => handleOpenRsvp()} className="btn btn-primary sm:w-auto w-full flex-shrink-0 min-h-12">
+            <img src={acceptIcon} alt="" className="w-4 h-4" />
             <span>Confirm RSVP</span>
           </button>
         </div>
 
-        {/* Guest List Table Container (Max 5 rows displayed, slide up/down scroll) */}
-        <div className="relative bg-white/80 backdrop-blur-xl rounded-[32px] p-4 sm:p-6 shadow-xl border border-white/80 overflow-hidden">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-100 px-2">
-            <span className="font-montserrat font-bold text-xs uppercase text-[#6b5b73] tracking-wider">
-              Invited Guests ({filteredGuests.length})
-            </span>
-            <button
-              type="button"
-              onClick={() => handleOpenWish()}
-              className="font-montserrat font-semibold text-xs text-[#C4526A] hover:underline flex items-center gap-1.5 cursor-pointer"
-            >
-              <img src={wishingIcon} alt="" className="w-3.5 h-3.5" />
-              <span>Leave a Wish</span>
+        {/* Guest list (about five rows visible, then it scrolls) */}
+        <div className="material-thick rounded-[32px] p-3 sm:p-5 overflow-hidden">
+          <div className="flex items-center justify-between gap-3 pb-3 mb-3 border-b border-[var(--separator)] px-2">
+            <h3 className="t-eyebrow text-[#4A3B55]">Invited guests ({filteredGuests.length})</h3>
+            <button type="button" onClick={() => handleOpenWish()} className="btn btn-secondary text-[#9A3550]">
+              <img src={wishingIcon} alt="" className="w-4 h-4" />
+              <span>Leave a wish</span>
             </button>
           </div>
 
           {loading ? (
-            <div className="py-12 flex flex-col items-center justify-center gap-3">
-              <div className="w-8 h-8 border-3 border-[#B496BC] border-t-transparent rounded-full animate-spin" />
-              <p className="font-montserrat text-xs text-[#6b5b73]">Loading guest list from database...</p>
+            <div className="py-12 flex flex-col items-center justify-center gap-3" role="status">
+              <div className="w-8 h-8 border-[3px] border-[#B496BC] border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+              <p className="t-callout text-[var(--label-secondary)]">Loading the guest list…</p>
             </div>
           ) : filteredGuests.length === 0 ? (
-            <div className="py-12 text-center">
-              <p className="font-montserrat font-bold text-lg text-[#6b5b73]">No matching guest found</p>
-              <p className="font-montserrat text-xs text-gray-500 mt-1">
-                {searchQuery ? 'Check spelling or verify your name with the host.' : 'No attendees registered yet.'}
+            <div className="py-12 text-center" role="status">
+              <p className="t-headline text-[var(--label-secondary)]">No matching guest found</p>
+              <p className="t-callout text-[var(--label-tertiary)] mt-1">
+                {searchQuery ? 'Check the spelling, or ask the host to confirm your name.' : 'No guests have been added yet.'}
               </p>
             </div>
           ) : (
-            /* Scrollable list displaying max 5 rows at once */
-            <div className="attendees-scroll flex flex-col gap-2.5 pr-1">
+            <ul className="attendees-scroll flex flex-col gap-2.5 pr-1" aria-label="Invited guests">
               {filteredGuests.map((guest, idx) => (
-                <motion.div
+                <motion.li
                   key={guest.id}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-white/75 hover:bg-white border border-white/70 transition shadow-xs gap-3"
+                  className="flex items-center justify-between p-3 rounded-2xl bg-white border border-[var(--separator)] gap-3"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: Math.min(idx * 0.04, 0.25) }}
                 >
-                  {/* Avatar + Name */}
+                  {/* Avatar + name + status */}
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#B496BC]/60 shadow-xs">
-                      <img
-                        src={getAvatarForGuest(guest.id || guest.guest_name)}
-                        alt={guest.guest_name}
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#B496BC]/60">
+                      <img src={getAvatarForGuest(guest.id || guest.guest_name)} alt="" className="w-full h-full object-cover" />
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <h4 className="font-montserrat font-bold text-xs sm:text-sm text-[#1A1A2E] truncate">
-                        {guest.guest_name}
-                      </h4>
-
-                      {/* Attendance badge */}
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        {guest.is_attending ? (
-                          <span className="inline-flex items-center text-[10px] sm:text-[11px] font-montserrat font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">
-                            ● Attending {guest.plus_ones > 0 ? `(+${guest.plus_ones})` : ''}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center text-[10px] sm:text-[11px] font-montserrat font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                            ○ Pending Response
-                          </span>
-                        )}
-                      </div>
+                      <p className="t-headline text-[var(--label)] truncate">{guest.guest_name}</p>
+                      {/* Status is shown with text and a symbol, never colour alone */}
+                      {guest.is_attending ? (
+                        <span className="inline-flex items-center gap-1 t-footnote font-semibold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                          <span aria-hidden="true">✓</span> Attending{guest.plus_ones > 0 ? ` (+${guest.plus_ones})` : ''}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 t-footnote font-semibold text-[#4A4A63] bg-gray-100 px-2 py-0.5 rounded-full">
+                          <span aria-hidden="true">○</span> Awaiting reply
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  {/* Action Buttons using provided asset icons */}
+                  {/* Row actions */}
                   <div className="flex items-center gap-1.5 flex-shrink-0">
                     <button
                       type="button"
                       onClick={() => handleOpenRsvp(guest)}
-                      title="Confirm Attendance"
-                      className="px-3 py-1.5 rounded-xl bg-[#1A1A2E] hover:bg-[#2b2b48] text-white text-[11px] font-montserrat font-semibold flex items-center gap-1.5 transition shadow-xs cursor-pointer"
+                      className="btn btn-primary px-3 sm:px-4"
+                      aria-label={`RSVP as ${guest.guest_name}`}
                     >
-                      <img src={acceptIcon} alt="" className="w-3 h-3" />
+                      <img src={acceptIcon} alt="" className="w-4 h-4" />
                       <span className="hidden sm:inline">RSVP</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleOpenWish(guest)}
-                      title="Send Birthday Wish"
-                      className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 transition cursor-pointer"
-                      aria-label={`Send wish as ${guest.guest_name}`}
+                      className="icon-btn"
+                      aria-label={`Send a wish as ${guest.guest_name}`}
                     >
-                      <img src={wishingIcon} alt="" className="w-3.5 h-3.5" />
+                      <img src={wishingIcon} alt="" className="w-4 h-4" />
                     </button>
                   </div>
-                </motion.div>
+                </motion.li>
               ))}
-            </div>
+            </ul>
           )}
         </div>
 
-        {/* Wishing Message Carousel (Right-to-left effect, 3s pause on each, auto-hides if empty) */}
+        {/* Wishes wall */}
         <WishCarousel refreshTrigger={refreshTrigger} />
       </div>
 
-      {/* RSVP Confirmation Modal with Email Verification & Save the Date */}
+      {/* RSVP flow: verify email, respond, save the date */}
       <RsvpModal
         isOpen={isRsvpModalOpen}
         onClose={() => setIsRsvpModalOpen(false)}
@@ -239,7 +218,7 @@ export function GuestListSection() {
         onRsvpSuccess={handleRsvpSuccess}
       />
 
-      {/* Responsive Wish Sheet (Bottom sheet on phone/tablet, right live drawer on laptop/desktop) */}
+      {/* Wish sheet: bottom sheet on phones, side drawer on desktop */}
       <WishSheet
         isOpen={isWishSheetOpen}
         onClose={() => setIsWishSheetOpen(false)}

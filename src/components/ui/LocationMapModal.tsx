@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import mapsIcon from '../../assets/icon/dark/maps-redirect.svg';
+import { useDialog } from '../../hooks/useDialog';
 
 interface LocationMapModalProps {
   isOpen: boolean;
@@ -8,6 +9,8 @@ interface LocationMapModalProps {
 }
 
 export function LocationMapModal({ isOpen, onClose, onConfirm }: LocationMapModalProps) {
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, onClose);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -19,48 +22,43 @@ export function LocationMapModal({ isOpen, onClose, onConfirm }: LocationMapModa
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
           />
 
-          {/* Modal Container */}
           <motion.div
-            className="relative z-10 bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-gray-100 flex flex-col gap-4 text-center"
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="map-dialog-title"
+            aria-describedby="map-dialog-desc"
+            tabIndex={-1}
+            className="relative z-10 bg-white rounded-[28px] p-6 sm:p-8 max-w-md w-full flex flex-col gap-4 text-center"
+            style={{ boxShadow: 'var(--elev-3)' }}
+            initial={{ scale: 0.94, opacity: 0, y: 16 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            exit={{ scale: 0.94, opacity: 0, y: 16 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
           >
-            {/* Map Pin Icon Badge */}
-            <div className="w-14 h-14 rounded-full bg-[#F9C5D1] text-[#1A1A2E] flex items-center justify-center mx-auto mb-1 shadow-xs">
+            <div className="w-14 h-14 rounded-full bg-[#F9C5D1] flex items-center justify-center mx-auto">
               <img src={mapsIcon} alt="" className="w-7 h-7" />
             </div>
 
-            <h3 className="font-montserrat font-bold text-lg sm:text-xl text-[#1A1A2E]">
-              Open Pinned Map in Google Maps?
-            </h3>
+            <h2 id="map-dialog-title" className="t-title text-[#1A1A2E] text-2xl">
+              Open in Google Maps?
+            </h2>
 
-            <p className="font-montserrat text-xs sm:text-sm text-[#4a4a6a] leading-relaxed">
-              You will be redirected to Google Maps in a new tab to see full directions to{' '}
-              <span className="font-semibold text-[#1A1A2E]">
-                The Almonds Boutique Aparthotel, SerenityCore Wellness Hub Palette
-              </span>{' '}
-              on Hon. Tudtud Road.
+            <p id="map-dialog-desc" className="t-callout text-[var(--label-secondary)]">
+              Directions to{' '}
+              <span className="font-semibold text-[var(--label)]">The Almonds Boutique Aparthotel, SerenityCore Wellness Hub Palette</span>{' '}
+              on Hon. Tudtud Road will open in a new tab.
             </p>
 
-            <div className="flex gap-3 mt-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 py-3 px-4 rounded-xl border border-gray-300 font-montserrat font-semibold text-xs sm:text-sm text-gray-700 hover:bg-gray-50 transition cursor-pointer"
-              >
-                Stay Here
+            <div className="flex flex-col-reverse sm:flex-row gap-3 mt-2">
+              <button type="button" onClick={onClose} className="btn btn-outline flex-1">
+                Stay here
               </button>
-
-              <button
-                type="button"
-                onClick={onConfirm}
-                className="flex-1 py-3 px-4 rounded-xl bg-[#1A1A2E] text-white font-montserrat font-semibold text-xs sm:text-sm hover:bg-[#2b2b48] shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Continue</span>
+              <button type="button" onClick={onConfirm} className="btn btn-primary flex-1" data-autofocus>
+                <span>Open Maps</span>
                 <img src={mapsIcon} alt="" className="w-4 h-4 invert" />
               </button>
             </div>

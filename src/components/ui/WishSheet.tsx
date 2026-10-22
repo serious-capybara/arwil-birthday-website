@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { verifyGuestEmail, submitWishMessage, type RSVP } from '../../lib/supabase/client';
 import paperStar from '../../assets/paper-star.webp';
 import wishingIcon from '../../assets/icon/dark/wishing-message.svg';
+import { useDialog } from '../../hooks/useDialog';
 
 interface WishSheetProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export function WishSheet({
   onGuestVerified,
   onWishSubmitted,
 }: WishSheetProps) {
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, onClose);
   const [emailInput, setEmailInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,135 +95,109 @@ export function WishSheet({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
           />
 
-          {/* Responsive Wish Sheet: Bottom sheet on phone/tablet, right live drawer on laptop/desktop */}
+          {/* Bottom sheet on phones and tablets, side drawer on desktop */}
           <motion.div
-            className="relative z-10 w-full lg:w-[440px] max-h-[88vh] lg:max-h-full h-auto lg:h-full bg-white rounded-t-[36px] lg:rounded-t-none lg:rounded-l-[36px] shadow-2xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto border border-gray-100"
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="wish-title"
+            tabIndex={-1}
+            className="relative z-10 w-full lg:w-[440px] max-h-[90svh] lg:max-h-full h-auto lg:h-full bg-white rounded-t-[28px] lg:rounded-t-none lg:rounded-l-[28px] p-5 sm:p-8 flex flex-col justify-between overflow-y-auto"
+            style={{ boxShadow: 'var(--elev-3)' }}
             initial={{ y: '100%', x: 0 }}
-            animate={{
-              y: 0,
-              x: 0,
-              transition: { type: 'spring', damping: 28, stiffness: 240 },
-            }}
-            exit={{
-              y: '100%',
-              x: 0,
-              transition: { duration: 0.25 },
-            }}
+            animate={{ y: 0, x: 0, transition: { type: 'spring', damping: 30, stiffness: 260 } }}
+            exit={{ y: '100%', x: 0, transition: { duration: 0.25 } }}
           >
-            {/* Sheet Header */}
             <div>
-              {/* Drag bar on mobile */}
-              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 lg:hidden" />
+              {/* Grabber (visual cue only; the close button is the real control) */}
+              <div className="w-10 h-1.5 bg-gray-300 rounded-full mx-auto mb-4 lg:hidden" aria-hidden="true" />
 
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center justify-between gap-3 pb-3 border-b border-[var(--separator)]">
                 <div className="flex items-center gap-2">
                   <img src={wishingIcon} alt="" className="w-5 h-5" />
-                  <span className="font-montserrat font-bold text-xs uppercase tracking-wider text-[#6b5b73]">
-                    Birthday Wish Wall
-                  </span>
+                  <span className="t-eyebrow text-[#4A3B55] tracking-wider">Birthday wish wall</span>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 flex items-center justify-center text-sm font-bold transition cursor-pointer"
-                  aria-label="Close sheet"
-                >
-                  ✕
+                <button type="button" onClick={onClose} className="icon-btn" aria-label="Close">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6 6 18" />
+                  </svg>
                 </button>
               </div>
 
-              {/* Title & Prompt */}
-              <div className="mt-4">
+              <div className="mt-5">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-montserrat font-bold text-xl sm:text-2xl text-[#1A1A2E]">
-                    Send a Sweet Wish
-                  </h3>
+                  <h2 id="wish-title" className="t-title text-[#1A1A2E] text-2xl">
+                    Send a sweet wish
+                  </h2>
                   <img src={paperStar} alt="" className="w-5 h-5 select-none" />
                 </div>
-                <p className="font-montserrat text-xs sm:text-sm text-[#4a4a6a] mt-1 leading-relaxed">
-                  Your message will be displayed on the public wishing carousel for everyone to see!
+                <p className="t-callout text-[var(--label-secondary)] mt-2">
+                  Your message appears on the public wishes wall for everyone to see.
                 </p>
               </div>
 
-              {/* Success / Error Messages */}
               {successMessage && (
-                <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-montserrat font-semibold">
+                <div role="status" className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 t-callout font-semibold">
                   {successMessage}
                 </div>
               )}
 
               {errorMessage && (
-                <div className="mt-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-montserrat">
+                <div role="alert" className="mt-4 p-4 rounded-2xl bg-red-50 border border-red-300 text-red-800 t-callout">
                   {errorMessage}
                 </div>
               )}
 
-              {/* Form Content */}
               {!verifiedGuest ? (
-                /* Step A: Email Verification Required */
+                /* Step A: verify who you are first */
                 <form onSubmit={handleVerifyEmail} className="mt-6 flex flex-col gap-4">
-                  <div className="p-4 rounded-2xl bg-[#B496BC]/15 border border-[#B496BC]/30">
-                    <span className="font-montserrat font-bold text-xs text-[#1A1A2E] block">
-                      🔒 Verification Required
-                    </span>
-                    <p className="font-montserrat text-xs text-[#554a5c] mt-0.5">
-                      Please enter your invited email address to verify identity before posting a wish.
+                  <div className="p-4 rounded-2xl bg-[#B496BC]/15 border border-[#B496BC]/40">
+                    <p className="t-callout font-semibold text-[var(--label)]">🔒 Quick verification</p>
+                    <p className="t-footnote text-[var(--label-secondary)] mt-1">
+                      Enter the email address you gave the host so we know the wish is really from you.
                     </p>
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="wish-email" className="font-montserrat font-bold text-xs text-[#1A1A2E]">
-                      Your Email Address:
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="wish-email" className="field-label">
+                      Your email address
                     </label>
                     <input
                       id="wish-email"
                       type="email"
                       required
+                      autoComplete="email"
+                      inputMode="email"
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder="e.g. yourname@example.com"
-                      className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-sm font-montserrat focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition outline-hidden"
+                      placeholder="name@example.com"
+                      className="field"
+                      data-autofocus
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading || !emailInput.trim()}
-                    className="w-full py-3.5 px-4 bg-[#1A1A2E] hover:bg-[#2b2b48] disabled:opacity-50 text-white font-montserrat font-bold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <span>Verify & Continue</span>
-                    )}
+                  <button type="submit" disabled={loading || !emailInput.trim()} className="btn btn-primary btn-block min-h-12">
+                    {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Verifying" /> : <span>Verify and continue</span>}
                   </button>
                 </form>
               ) : (
-                /* Step B: Writing the Wish Message */
+                /* Step B: write the wish */
                 <form onSubmit={handleSubmitWish} className="mt-6 flex flex-col gap-4">
-                  <div className="p-3.5 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-between">
+                  <div className="p-4 rounded-2xl bg-[#F4F1F6] flex items-center justify-between gap-3">
                     <div>
-                      <span className="font-montserrat text-[11px] text-[#6b5b73] block uppercase tracking-wider">
-                        Posting as
-                      </span>
-                      <span className="font-montserrat font-bold text-sm text-[#1A1A2E]">
-                        {verifiedGuest.guest_name}
-                      </span>
+                      <p className="t-footnote text-[var(--label-secondary)]">Posting as</p>
+                      <p className="t-headline text-[var(--label)]">{verifiedGuest.guest_name}</p>
                     </div>
-                    <span className="text-xs bg-emerald-100 text-emerald-800 font-montserrat font-semibold px-2 py-0.5 rounded-full">
-                      ✓ Verified
-                    </span>
+                    <span className="t-footnote bg-emerald-100 text-emerald-900 font-semibold px-2.5 py-1 rounded-full">✓ Verified</span>
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="wish-message-input" className="font-montserrat font-bold text-xs text-[#1A1A2E] flex justify-between">
-                      <span>Your Birthday Greeting:</span>
-                      <span className="font-normal text-[11px] text-gray-400">
-                        {messageInput.length} / 500
-                      </span>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="wish-message-input" className="field-label flex items-baseline justify-between gap-2">
+                      <span>Your birthday greeting</span>
+                      <span className="t-footnote font-normal text-[var(--label-tertiary)]">{messageInput.length} / 500</span>
                     </label>
                     <textarea
                       id="wish-message-input"
@@ -230,22 +206,19 @@ export function WishSheet({
                       maxLength={500}
                       value={messageInput}
                       onChange={(e) => setMessageInput(e.target.value)}
-                      placeholder="Write your warmest birthday thoughts, yoga jokes, or sweet greetings..."
-                      className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-sm font-montserrat focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition resize-none outline-hidden"
+                      placeholder="Your warmest thoughts, yoga jokes or sweet greetings…"
+                      className="field"
+                      data-autofocus
                     />
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={loading || messageInput.trim().length < 2}
-                    className="w-full py-3.5 px-4 bg-[#1A1A2E] hover:bg-[#2b2b48] disabled:opacity-50 text-white font-montserrat font-bold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
+                  <button type="submit" disabled={loading || messageInput.trim().length < 2} className="btn btn-primary btn-block min-h-12">
                     {loading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Publishing" />
                     ) : (
                       <>
                         <img src={wishingIcon} alt="" className="w-4 h-4 invert" />
-                        <span>Publish Birthday Wish</span>
+                        <span>Publish wish</span>
                       </>
                     )}
                   </button>
@@ -253,11 +226,8 @@ export function WishSheet({
               )}
             </div>
 
-            {/* Bottom note */}
-            <div className="pt-6 border-t border-gray-100 text-center">
-              <p className="font-montserrat text-[11px] text-gray-400">
-                Meow Yoga Birthday • November 20, 2026
-              </p>
+            <div className="pt-6 mt-6 border-t border-[var(--separator)] text-center">
+              <p className="t-footnote text-[var(--label-tertiary)]">Meow Yoga Birthday · November 20, 2026</p>
             </div>
           </motion.div>
         </div>

@@ -2,69 +2,60 @@ import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import nameBg from '../../assets/name-bg.webp';
 
-const HeroScene = lazy(() =>
-  import('../../three/HeroScene').then((m) => ({ default: m.HeroScene }))
-);
+const HeroScene = lazy(() => import('../../three/HeroScene').then((m) => ({ default: m.HeroScene })));
 
 export function HeroSection() {
   return (
     <section
       id="hero"
-      className="section-full min-h-screen flex flex-col items-center justify-end pb-12 sm:pb-16 relative overflow-hidden"
-      aria-label="Birthday invitation hero"
+      className="section-full min-h-screen flex flex-col items-center justify-end pb-6 sm:pb-10 relative overflow-hidden"
+      aria-label="Birthday invitation"
     >
-      {/* 3D Scene (Silver/Pink Disco balls, interactive floating purple-pink balloons) */}
+      {/* Soft stage light behind the cat */}
+      <div className="stage" aria-hidden="true" />
+
+      {/* 3D scene: two swinging disco balls and physics balloons you can touch */}
       <Suspense fallback={null}>
         <HeroScene className="absolute inset-0 pointer-events-auto z-10" />
       </Suspense>
 
-      {/* Ripped Graph Paper Title Card - Placed to overlap bottom of cat mascot */}
+      {/* Ripped graph-paper title card, overlapping the bottom of the cat */}
       <motion.div
-        className="relative z-25 w-[92vw] max-w-[360px] sm:max-w-[420px] mb-4 sm:mb-8"
-        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+        className="relative z-[25] flex flex-col items-center"
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="relative flex flex-col items-center justify-center">
-          {/* Authentic Ripped Paper image with transparent cutouts */}
-          <img
-            src={nameBg}
-            alt=""
-            role="presentation"
-            className="w-full h-auto object-contain select-none drop-shadow-xl"
-          />
-
-          {/* Text positioned right on the ripped graph paper */}
-          <div className="absolute inset-0 pt-6 sm:pt-8 px-4 flex flex-col items-center justify-center text-center">
-            <h1 className="font-montserrat font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-[0.12em] uppercase text-black leading-snug">
-              Meow<br />
-              Yoga<br />
+        <div className="paper-card">
+          <img src={nameBg} alt="" role="presentation" className="select-none" draggable={false} />
+          <div className="paper-copy">
+            <h1>
+              Meow Yoga
+              <br />
               Birthday
             </h1>
-
-            <p className="font-montserrat text-xs sm:text-sm text-[#2A2A3E] font-medium tracking-normal mt-2">
-              Please bring your own yoga mat
+            <p className="paper-date">
+              <span className="sr-only">Date: </span>
+              <time dateTime="2026-11-20T18:40">Nov 20 · 6:40 pm</time>
             </p>
+            <p>Please bring your own yoga mat</p>
           </div>
         </div>
       </motion.div>
 
-      {/* Subtle Scroll Hint */}
-      <motion.div
-        className="relative z-20 flex flex-col items-center gap-1.5"
+      {/* Scroll hint is also a real link, so it works with keyboard, mouse and touch */}
+      <motion.a
+        href="#when-where"
+        className="relative z-20 mt-3 min-h-11 px-4 flex flex-col items-center justify-center gap-1 rounded-full text-[var(--on-teal-secondary)] no-underline hover:text-white"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.85 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.8 }}
       >
-        <span className="font-montserrat text-[10px] tracking-widest uppercase text-white/90 drop-shadow-xs">
-          Scroll to explore
-        </span>
-        <motion.div
-          className="w-1 h-6 bg-[#FFAEC9] rounded-full shadow-xs"
-          animate={{ scaleY: [1, 0.4, 1], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </motion.div>
+        <span className="t-footnote font-medium">Scroll to explore</span>
+        <svg className="nudge" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </motion.a>
     </section>
   );
 }

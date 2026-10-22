@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, Suspense, lazy } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from 'framer-motion';
 import personImgTwo from '../../assets/person-img-two.webp';
 import personImgThree from '../../assets/person-img-three.webp';
 
@@ -54,8 +54,10 @@ export function EventReminders() {
 
   const [rawCoords, setRawCoords] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  const reduceMotion = useReducedMotion();
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || reduceMotion) return;
     const rect = containerRef.current.getBoundingClientRect();
     const normX = (e.clientX - rect.left) / rect.width - 0.5;
     const normY = (e.clientY - rect.top) / rect.height - 0.5;
@@ -82,19 +84,19 @@ export function EventReminders() {
       }
     };
 
-    if (window.DeviceOrientationEvent) {
+    if (window.DeviceOrientationEvent && !reduceMotion) {
       window.addEventListener('deviceorientation', handleOrientation);
     }
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, reduceMotion]);
 
   return (
     <section
       id="reminders"
       className="section-full min-h-screen py-20 px-4 sm:px-8 relative flex flex-col items-center justify-center overflow-hidden"
-      aria-label="Event reminders section"
+      aria-label="Event reminders"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -126,7 +128,7 @@ export function EventReminders() {
           </div>
 
           {/* iPhone 18 Frame Container matching section-four.png */}
-          <div className="relative w-[86vw] max-w-[340px] sm:max-w-[370px] h-[580px] sm:h-[630px] rounded-[52px] p-3 shadow-2xl border-[6px] border-[#181920] bg-[#0c0d12] flex flex-col items-center overflow-hidden [transform-style:preserve-3d]">
+          <div className="relative w-[86vw] max-w-[340px] sm:max-w-[370px] h-[600px] sm:h-[640px] rounded-[52px] p-3 shadow-2xl border-[6px] border-[#181920] bg-[#0c0d12] flex flex-col items-center overflow-hidden [transform-style:preserve-3d]">
             {/* Wallpaper Background matching website theme */}
             <div
               className="absolute inset-0 bg-[#0A515A] rounded-[44px] opacity-95"
@@ -143,10 +145,10 @@ export function EventReminders() {
 
             {/* Lock Screen Date & Live Clock */}
             <div className="relative z-20 mt-6 sm:mt-7 flex flex-col items-center text-center">
-              <span className="font-montserrat font-medium text-xs sm:text-sm text-[#1A1A2E]/80 tracking-wide">
+              <span className="font-medium text-sm text-[#1A1A2E]/80 tracking-wide">
                 {currentDate || 'October 20, 2026'}
               </span>
-              <h3 className="font-montserrat font-black text-4xl sm:text-5xl text-[#1A1A2E] tracking-tight mt-1">
+              <h3 className="font-display font-extrabold text-4xl sm:text-5xl text-[#1A1A2E] tracking-tight mt-1">
                 {currentTime || '6:20 PM'}
               </h3>
             </div>
@@ -169,16 +171,16 @@ export function EventReminders() {
                 transition={{ duration: 0.6 }}
               >
                 <div className="flex-1 pr-1">
-                  <span className="font-montserrat text-[11px] font-bold text-[#6b5b73] uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-[#5C4D66] uppercase tracking-wider block">
                     Reminders
                   </span>
-                  <h4 className="font-montserrat text-xs sm:text-sm font-bold text-[#1A1A2E] mt-0.5">
+                  <h4 className="text-sm sm:text-base font-bold text-[#1A1A2E] mt-0.5">
                     Outfit Ready?
                   </h4>
-                  <p className="font-montserrat text-[11px] sm:text-xs text-[#2d2d44] leading-relaxed mt-0.5">
+                  <p className="text-xs sm:text-sm text-[#2d2d44] leading-relaxed mt-0.5">
                     Do not forget to wear your pink or lavender comfortable outfit on the day.
                   </p>
-                  <span className="font-montserrat text-[11px] font-bold text-[#1A1A2E] mt-1 block">
+                  <span className="text-xs font-bold text-[#1A1A2E] mt-1 block">
                     Yoga mat ready?
                   </span>
                 </div>
@@ -201,13 +203,13 @@ export function EventReminders() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <div className="flex-1 pr-1">
-                  <span className="font-montserrat text-[11px] font-bold text-[#6b5b73] uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-[#5C4D66] uppercase tracking-wider block">
                     Reminders
                   </span>
-                  <h4 className="font-montserrat text-xs sm:text-sm font-bold text-[#1A1A2E] mt-0.5">
+                  <h4 className="text-sm sm:text-base font-bold text-[#1A1A2E] mt-0.5">
                     Yoga start time
                   </h4>
-                  <p className="font-montserrat text-[11px] sm:text-xs text-[#2d2d44] leading-relaxed mt-0.5">
+                  <p className="text-xs sm:text-sm text-[#2d2d44] leading-relaxed mt-0.5">
                     Our Yoga will start at exactly <strong>6:40 PM</strong>. Dinner and short activity will shortly follow.
                   </p>
                 </div>

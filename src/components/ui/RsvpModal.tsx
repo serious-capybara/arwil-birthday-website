@@ -5,6 +5,7 @@ import { downloadICSFile, getGoogleCalendarUrl } from '../../lib/calendarHelper'
 import saveDateIcon from '../../assets/icon/dark/save-date.svg';
 import acceptIcon from '../../assets/icon/light/accept-rsvp.svg';
 import paperStar from '../../assets/paper-star.webp';
+import { useDialog } from '../../hooks/useDialog';
 
 interface RsvpModalProps {
   isOpen: boolean;
@@ -19,6 +20,8 @@ export function RsvpModal({
   targetGuest,
   onRsvpSuccess,
 }: RsvpModalProps) {
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, onClose);
+
   // Steps: 1 = 'verify-email', 2 = 'respond-rsvp', 3 = 'save-date' (keeps modal open with Save the Date)
   const [step, setStep] = useState<'verify-email' | 'respond-rsvp' | 'save-date'>('verify-email');
   const [verifiedGuest, setVerifiedGuest] = useState<RSVP | null>(null);
@@ -95,10 +98,13 @@ export function RsvpModal({
     setStep('save-date');
   };
 
+  const stepTitle =
+    step === 'verify-email' ? 'Step 1 of 3 · Verify invitation' : step === 'respond-rsvp' ? 'Step 2 of 3 · Your response' : 'Step 3 of 3 · Save the date';
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           {/* Backdrop */}
           <motion.div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs"
@@ -106,161 +112,143 @@ export function RsvpModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
+            aria-hidden="true"
           />
 
-          {/* Modal Container */}
           <motion.div
-            className="relative z-10 bg-white rounded-[32px] p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-gray-100 flex flex-col gap-5 overflow-hidden"
-            initial={{ scale: 0.92, opacity: 0, y: 25 }}
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="rsvp-title"
+            tabIndex={-1}
+            className="relative z-10 bg-white rounded-t-[28px] sm:rounded-[32px] p-5 sm:p-8 max-w-lg w-full max-h-[92svh] overflow-y-auto flex flex-col gap-5"
+            style={{ boxShadow: 'var(--elev-3)' }}
+            initial={{ scale: 0.96, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.92, opacity: 0, y: 25 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 280 }}
+            exit={{ scale: 0.96, opacity: 0, y: 30 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
           >
-            {/* Top Stars & Close Button */}
-            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+            {/* Header: step + close */}
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-[var(--separator)]">
               <div className="flex items-center gap-2">
                 <img src={paperStar} alt="" className="w-5 h-5 select-none" />
-                <span className="font-montserrat font-bold text-xs uppercase tracking-wider text-[#6b5b73]">
-                  {step === 'verify-email' && 'Step 1: Verify Invitation'}
-                  {step === 'respond-rsvp' && 'Step 2: Confirm Attendance'}
-                  {step === 'save-date' && 'Step 3: Save the Date'}
-                </span>
+                <span className="t-eyebrow text-[#4A3B55] tracking-wider">{stepTitle}</span>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 flex items-center justify-center text-sm font-bold transition cursor-pointer"
-                aria-label="Close modal"
-              >
-                ✕
+              <button type="button" onClick={onClose} className="icon-btn" aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6 6 18" />
+                </svg>
               </button>
             </div>
 
-            {/* Error Banner */}
+            {/* Error banner (announced to screen readers) */}
             {errorMessage && (
               <motion.div
+                role="alert"
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm p-3.5 rounded-2xl flex items-start gap-2"
+                className="bg-red-50 border border-red-300 text-red-800 t-callout p-3.5 rounded-2xl flex items-start gap-2"
               >
-                <span className="text-red-500 font-bold text-base leading-none">⚠</span>
+                <span className="font-bold leading-none mt-0.5" aria-hidden="true">⚠</span>
                 <span>{errorMessage}</span>
               </motion.div>
             )}
 
-            {/* ── STEP 1: Email Verification ── */}
+            {/* ── STEP 1: Email verification ── */}
             {step === 'verify-email' && (
               <form onSubmit={handleVerifyEmail} className="flex flex-col gap-4">
                 <div className="text-center">
-                  <h3 className="font-montserrat font-bold text-xl text-[#1A1A2E]">
-                    {targetGuest ? `Verify RSVP for ${targetGuest.guest_name}` : 'Verify Your Invitation'}
-                  </h3>
-                  <p className="font-montserrat text-xs sm:text-sm text-[#4a4a6a] mt-1.5 leading-relaxed">
-                    To protect guest privacy, please enter the exact email address you provided to the host.
+                  <h2 id="rsvp-title" className="t-title text-[#1A1A2E] text-2xl">
+                    {targetGuest ? `Verify RSVP for ${targetGuest.guest_name}` : 'Verify your invitation'}
+                  </h2>
+                  <p className="t-callout text-[var(--label-secondary)] mt-2">
+                    To protect guest privacy, enter the email address you gave the host.
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-1.5 mt-2">
-                  <label htmlFor="rsvp-email" className="font-montserrat font-bold text-xs text-[#1A1A2E]">
-                    Your Invited Email Address:
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="rsvp-email" className="field-label">
+                    Your invited email address
                   </label>
                   <input
                     id="rsvp-email"
                     type="email"
                     required
+                    autoComplete="email"
+                    inputMode="email"
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="e.g. yourname@example.com"
-                    className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-sm font-montserrat focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition outline-hidden"
+                    placeholder="name@example.com"
+                    className="field"
+                    data-autofocus
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading || !emailInput.trim()}
-                  className="w-full mt-2 py-3.5 px-4 bg-[#1A1A2E] hover:bg-[#2b2b48] disabled:opacity-50 text-white font-montserrat font-bold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span>Verify My Email</span>
-                  )}
+                <button type="submit" disabled={loading || !emailInput.trim()} className="btn btn-primary btn-block min-h-12">
+                  {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Verifying" /> : <span>Verify my email</span>}
                 </button>
               </form>
             )}
 
-            {/* ── STEP 2: Attendance & Wish Response ── */}
+            {/* ── STEP 2: Attendance + optional wish ── */}
             {step === 'respond-rsvp' && verifiedGuest && (
-              <form onSubmit={handleConfirmRsvp} className="flex flex-col gap-4">
+              <form onSubmit={handleConfirmRsvp} className="flex flex-col gap-5">
                 <div className="text-center">
-                  <h3 className="font-montserrat font-bold text-xl text-[#1A1A2E]">
+                  <h2 id="rsvp-title" className="t-title text-[#1A1A2E] text-2xl">
                     Welcome, {verifiedGuest.guest_name}! 🐾
-                  </h3>
-                  <p className="font-montserrat text-xs text-[#6b5b73] mt-1">
-                    Event: Meow Yoga Birthday • Nov 20, 2026, 6:40 PM
-                  </p>
+                  </h2>
+                  <p className="t-callout text-[var(--label-secondary)] mt-1">Meow Yoga Birthday · Nov 20, 2026, 6:40 pm</p>
                 </div>
 
-                {/* Attending Selection */}
-                <div className="flex flex-col gap-2">
-                  <label className="font-montserrat font-bold text-xs text-[#1A1A2E]">
-                    Will you be able to attend?
-                  </label>
-                  <div className="grid grid-cols-2 gap-2.5">
+                <fieldset className="flex flex-col gap-2">
+                  <legend className="field-label mb-2">Will you be able to attend?</legend>
+                  <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={() => setIsAttending(true)}
-                      className={`p-3 rounded-2xl border text-xs sm:text-sm font-montserrat font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                        isAttending
-                          ? 'bg-[#1A1A2E] text-white border-[#1A1A2E] shadow-sm'
-                          : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
-                      }`}
+                      aria-pressed={isAttending}
+                      className={`btn ${isAttending ? 'btn-primary' : 'btn-outline'}`}
                     >
-                      <img src={acceptIcon} alt="" className="w-3.5 h-3.5" />
-                      <span>Yes, Attending!</span>
+                      <img src={acceptIcon} alt="" className={`w-4 h-4 ${isAttending ? '' : 'invert'}`} />
+                      <span>Yes, I'm in!</span>
                     </button>
-
                     <button
                       type="button"
                       onClick={() => setIsAttending(false)}
-                      className={`p-3 rounded-2xl border text-xs sm:text-sm font-montserrat font-bold flex items-center justify-center gap-2 transition cursor-pointer ${
-                        !isAttending
-                          ? 'bg-[#1A1A2E] text-white border-[#1A1A2E] shadow-sm'
-                          : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
-                      }`}
+                      aria-pressed={!isAttending}
+                      className={`btn ${!isAttending ? 'btn-primary' : 'btn-outline'}`}
                     >
-                      <span>Can't Make It</span>
+                      <span>Can't make it</span>
                     </button>
                   </div>
-                </div>
+                </fieldset>
 
-                {/* Plus-ones counter if attending */}
                 {isAttending && (
-                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50 border border-gray-200">
+                  <div className="flex items-center justify-between gap-3 p-4 rounded-2xl bg-[#F4F1F6]">
                     <div>
-                      <span className="font-montserrat font-bold text-xs text-[#1A1A2E] block">
-                        Bringing Companions (+1)?
-                      </span>
-                      <span className="font-montserrat text-[11px] text-[#6b5b73]">
-                        Extra guests attending with you
-                      </span>
+                      <p className="field-label" id="plusones-label">Bringing companions?</p>
+                      <p className="t-footnote text-[var(--label-secondary)]">Extra guests coming with you</p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2" role="group" aria-labelledby="plusones-label">
                       <button
                         type="button"
                         onClick={() => setPlusOnes((p) => Math.max(0, p - 1))}
-                        className="w-8 h-8 rounded-full bg-white border border-gray-200 font-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center cursor-pointer shadow-xs"
+                        disabled={plusOnes <= 0}
+                        className="icon-btn bg-white shadow-xs text-lg font-semibold"
+                        aria-label="One fewer companion"
                       >
-                        -
+                        −
                       </button>
-                      <span className="font-montserrat font-bold text-sm w-4 text-center">
+                      <output className="w-6 text-center font-semibold text-lg" aria-live="polite">
                         {plusOnes}
-                      </span>
+                      </output>
                       <button
                         type="button"
                         onClick={() => setPlusOnes((p) => Math.min(5, p + 1))}
-                        className="w-8 h-8 rounded-full bg-white border border-gray-200 font-bold text-gray-700 hover:bg-gray-100 flex items-center justify-center cursor-pointer shadow-xs"
+                        disabled={plusOnes >= 5}
+                        className="icon-btn bg-white shadow-xs text-lg font-semibold"
+                        aria-label="One more companion"
                       >
                         +
                       </button>
@@ -268,11 +256,10 @@ export function RsvpModal({
                   </div>
                 )}
 
-                {/* Optional Birthday Wish Message */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="wish-text" className="font-montserrat font-bold text-xs text-[#1A1A2E] flex items-center justify-between">
-                    <span>Birthday Wish for the Celebrant (Optional):</span>
-                    <span className="font-normal text-[11px] text-gray-400">Max 500 chars</span>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="wish-text" className="field-label flex items-baseline justify-between gap-2">
+                    <span>Birthday wish (optional)</span>
+                    <span className="t-footnote font-normal text-[var(--label-tertiary)]">{wishInput.length} / 500</span>
                   </label>
                   <textarea
                     id="wish-text"
@@ -280,74 +267,50 @@ export function RsvpModal({
                     maxLength={500}
                     value={wishInput}
                     onChange={(e) => setWishInput(e.target.value)}
-                    placeholder="Leave a sweet greeting or note for the Wish Wall..."
-                    className="w-full px-4 py-3 bg-gray-50 focus:bg-white rounded-2xl border border-gray-200 text-xs sm:text-sm font-montserrat focus:ring-2 focus:ring-[#B496BC] focus:border-[#B496BC] transition resize-none outline-hidden"
+                    placeholder="Leave a sweet note for the Wish Wall…"
+                    className="field"
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full mt-2 py-3.5 px-4 bg-[#1A1A2E] hover:bg-[#2b2b48] text-white font-montserrat font-bold text-sm rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <span>Submit RSVP Response</span>
-                  )}
+                <button type="submit" disabled={loading} className="btn btn-primary btn-block min-h-12">
+                  {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" role="status" aria-label="Sending" /> : <span>Send my response</span>}
                 </button>
               </form>
             )}
 
-            {/* ── STEP 3: Second Confirmation & Save the Date (Keeps Modal Open!) ── */}
+            {/* ── STEP 3: Save the date (the modal stays open on purpose) ── */}
             {step === 'save-date' && verifiedGuest && (
               <div className="flex flex-col items-center text-center gap-4 py-2">
-                <div className="w-16 h-16 rounded-full bg-[#F9C5D1] text-[#1A1A2E] flex items-center justify-center shadow-md">
+                <div className="w-16 h-16 rounded-full bg-[#F9C5D1] flex items-center justify-center">
                   <img src={saveDateIcon} alt="" className="w-8 h-8" />
                 </div>
 
                 <div>
-                  <h3 className="font-montserrat font-extrabold text-2xl text-[#1A1A2E]">
-                    {isAttending ? 'See You There! 🎉' : 'Response Recorded'}
-                  </h3>
-                  <p className="font-montserrat text-xs sm:text-sm text-[#4a4a6a] mt-1 max-w-sm">
+                  <h2 id="rsvp-title" className="t-title text-[#1A1A2E]">
+                    {isAttending ? 'See you there! 🎉' : 'Response recorded'}
+                  </h2>
+                  <p className="t-callout text-[var(--label-secondary)] mt-2 max-w-sm">
                     {isAttending
-                      ? 'Your RSVP has been confirmed. Don’t forget to add this special day to your calendar so you don’t miss any of the fun!'
-                      : 'We will miss you at the celebration! Thanks for letting us know.'}
+                      ? 'Your RSVP is confirmed. Add the day to your calendar so you don’t miss any of the fun.'
+                      : 'We’ll miss you at the celebration. Thanks for letting us know.'}
                   </p>
                 </div>
 
-                {/* Calendar Options (Save the Date button using save-date.svg) */}
                 {isAttending && (
-                  <div className="w-full flex flex-col gap-2.5 mt-2">
-                    {/* Direct 1-Click Google Calendar */}
-                    <a
-                      href={getGoogleCalendarUrl()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-3.5 px-5 rounded-2xl bg-[#1A1A2E] hover:bg-[#2b2b48] text-white font-montserrat font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2.5"
-                    >
+                  <div className="w-full flex flex-col gap-3 mt-2">
+                    <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-block min-h-12" data-autofocus>
                       <img src={saveDateIcon} alt="" className="w-4 h-4 invert" />
                       <span>Add to Google Calendar</span>
                     </a>
 
-                    {/* Download .ics file for Apple Calendar / Outlook */}
-                    <button
-                      type="button"
-                      onClick={() => downloadICSFile()}
-                      className="w-full py-3 px-5 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-montserrat font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <span>Download Calendar Event (.ics)</span>
+                    <button type="button" onClick={() => downloadICSFile()} className="btn btn-secondary btn-block">
+                      <span>Download calendar file (.ics)</span>
                     </button>
                   </div>
                 )}
 
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="mt-2 text-xs font-montserrat font-semibold text-[#6b5b73] hover:text-[#1A1A2E] transition underline cursor-pointer"
-                >
-                  Done & Return to Invitation
+                <button type="button" onClick={onClose} className="btn btn-outline mt-1">
+                  Done
                 </button>
               </div>
             )}

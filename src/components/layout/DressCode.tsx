@@ -10,8 +10,10 @@ export function DressCode() {
     <section
       id="what-to-wear"
       className="section-full min-h-screen py-20 px-4 sm:px-8 relative flex flex-col justify-center items-center overflow-hidden"
-      aria-label="What to wear section"
+      aria-labelledby="what-to-wear-title"
     >
+      <div className="stage" aria-hidden="true" />
+
       {/* Background festive sparkles and trumpet decorations from assets */}
       <img
         src={silverStars}
@@ -35,7 +37,7 @@ export function DressCode() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7 }}
         >
-          <div className="relative bg-white rounded-[32px] sm:rounded-[36px] py-7 px-8 sm:py-8 sm:px-10 shadow-lg border border-white/80">
+          <div className="relative bg-white rounded-[32px] sm:rounded-[36px] py-7 px-8 sm:py-8 sm:px-10 " style={{ boxShadow: 'var(--elev-2)' }}>
             {/* Stars on corners matching section-three.png */}
             <img
               src={paperStar}
@@ -50,7 +52,7 @@ export function DressCode() {
               className="absolute -bottom-3 right-6 w-7 h-7 sm:w-9 sm:h-9 select-none opacity-85 drop-shadow-xs"
             />
 
-            <h2 className="font-montserrat text-2xl sm:text-3xl text-center font-normal text-[#1A1A2E] tracking-tight">
+            <h2 id="what-to-wear-title" className="t-title text-center text-[#1A1A2E]">
               What to wear?
             </h2>
           </div>
@@ -64,11 +66,9 @@ export function DressCode() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, delay: 0.15 }}
         >
-          <span className="font-montserrat font-black text-sm sm:text-base text-black tracking-widest uppercase mb-1.5 ml-3">
-            THIS
-          </span>
+          <h3 className="t-eyebrow text-white mb-2 ml-3">This</h3>
 
-          <div className="relative w-[92%] sm:w-[84%] bg-[#B496BC] rounded-3xl p-5 sm:p-6 shadow-md flex items-center justify-between gap-4 overflow-hidden">
+          <div className="relative w-[92%] sm:w-[84%] bg-[#B496BC] rounded-3xl p-5 sm:p-6 flex items-center justify-between gap-4 overflow-hidden" style={{ boxShadow: 'var(--elev-2)' }}>
             <img
               src={paperStar}
               alt=""
@@ -81,13 +81,13 @@ export function DressCode() {
               <img
                 src={thisWearImg}
                 alt="Pastel pink active wear outfit"
-                className="w-full h-auto object-contain max-h-72 drop-shadow-md transform hover:scale-105 transition-transform"
+                className="w-full h-auto object-contain max-h-72 drop-shadow-md motion-safe:transition-transform motion-safe:hover:scale-105"
               />
             </div>
 
             {/* Description */}
             <div className="w-1/2 sm:w-7/12 text-right pr-2 sm:pr-4">
-              <p className="font-montserrat font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
+              <p className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
                 Pastel<br />
                 pink<br />
                 active<br />
@@ -105,11 +105,9 @@ export function DressCode() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, delay: 0.25 }}
         >
-          <span className="font-montserrat font-black text-sm sm:text-base text-black tracking-widest uppercase mb-1.5 mr-3">
-            THAT
-          </span>
+          <h3 className="t-eyebrow text-white mb-2 mr-3">That</h3>
 
-          <div className="relative w-[92%] sm:w-[84%] bg-[#B496BC] rounded-3xl p-5 sm:p-6 shadow-md flex items-center justify-between gap-4 overflow-hidden">
+          <div className="relative w-[92%] sm:w-[84%] bg-[#B496BC] rounded-3xl p-5 sm:p-6 flex items-center justify-between gap-4 overflow-hidden" style={{ boxShadow: 'var(--elev-2)' }}>
             <img
               src={paperStar}
               alt=""
@@ -119,7 +117,7 @@ export function DressCode() {
 
             {/* Description */}
             <div className="w-1/2 sm:w-7/12 text-left pl-2 sm:pl-4">
-              <p className="font-montserrat font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
+              <p className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-[#1A1A2E] leading-tight tracking-tight">
                 Lavender<br />
                 active<br />
                 wear
@@ -131,7 +129,7 @@ export function DressCode() {
               <img
                 src={thatWearImg}
                 alt="Lavender active wear outfit"
-                className="w-full h-auto object-contain max-h-72 drop-shadow-md transform hover:scale-105 transition-transform"
+                className="w-full h-auto object-contain max-h-72 drop-shadow-md motion-safe:transition-transform motion-safe:hover:scale-105"
               />
             </div>
           </div>
